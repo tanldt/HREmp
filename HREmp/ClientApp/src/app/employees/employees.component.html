@@ -1,0 +1,68 @@
+<h1>Employee List</h1>
+
+<p>Here's a list of Employee: feel free to play with it.</p>
+
+<p *ngIf="!cities"><em>Loading...</em></p>
+
+<div class="commands text-right" *ngIf="employees">
+  <button type="button"
+          [routerLink]="['/employee']"
+          class="btn btn-success">
+    Add a new Employee
+  </button>
+</div>
+
+<table class='table table-striped' aria-labelledby="tableLabel" [hidden]="!employees">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>email</th>
+      <th>Adress</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let employee of employees">
+      <td>{{ employee.id }}</td>
+      <td>{{ employee.empname }}</td>
+      <td>{{ employee.email }}</td>
+      <td>{{ employee.address }}</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<mat-form-field [hidden]="!employees">
+  <input matInput (keyup)="loadData($event.target.value)"
+         placeholder="Filter by emp name (or part of it)...">
+</mat-form-field>
+
+<table mat-table [dataSource]="employees" class="mat-elevation-z8" [hidden]="!employees"
+       matSort (matSortChange)="loadData()"
+       matSortActive="{{defaultSortColumn}}" matSortDirection="{{defaultSortOrder}}">
+
+  <!-- Id Column -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+    <td mat-cell *matCellDef="let Emp"> {{employee.id}} </td>
+  </ng-container>
+
+  <!-- Emp Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Emp Name</th>
+    <td mat-cell *matCellDef="let employee">
+      <a [routerLink]="['/employee', employee.id]">{{employee.empname}}</a>
+    </td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+﻿
+<!-- Pagination directive -->
+<mat-paginator [hidden]="!employees"
+               (page)="getData($event)"
+               [pageSize]="10"
+               [pageSizeOptions]="[10, 20, 50]"
+               showFirstLastButtons></mat-paginator>
